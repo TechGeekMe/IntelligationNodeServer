@@ -13,5 +13,14 @@
     "body-parser": "~1.14.2",
     "mysql": "~2.10.2",
     "socket.io": "~1.4.4"
-  }
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shoaib30/IntelligationNodeServer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shoaib30/IntelligationNodeServer/issues"
+  },
+  "homepage": "https://github.com/shoaib30/IntelligationNodeServer#readme",
+  "description": ""
 }

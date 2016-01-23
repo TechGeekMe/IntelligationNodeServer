@@ -5,22 +5,22 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 //azure mysql server for final use
-// var pool = mysql.createPool({
-//   connectionLimit: 4,
-//   host: '***REMOVED***',
-//   user: '***REMOVED***',
-//   password: '***REMOVED***',
-//   database: 'farm'
-// });
-
-//local mysql server
 var pool = mysql.createPool({
   connectionLimit: 4,
-  host: 'localhost',
-  user: 'root',
+  host: '***REMOVED***',
+  user: '***REMOVED***',
   password: '***REMOVED***',
   database: 'farm'
 });
+
+//local mysql server
+// var pool = mysql.createPool({
+//   connectionLimit: 4,
+//   host: 'localhost',
+//   user: 'root',
+//   password: '***REMOVED***',
+//   database: 'farm'
+// });
 
 // This responds with "Hello Farmer" on the homepage
 app.get('/', function (req, res) {
@@ -45,9 +45,9 @@ app.get('/request', function (req, res) {
 
 // requesting details of all sensor values. used at the start of the app
 app.get('/requestall', function(req, res) {
-  var aadhaar_id = req.query.farmer_id;
-  console.log(farmer_id);
-  var QueryString = "SELECT sensor_id, current_value FROM farm_data_sensor WHERE farmer_id=" + aadhaar_id;
+  var aadhaar_id = req.query.aadhaar_id;
+  console.log(aadhaar_id);
+  var QueryString = "SELECT sensor_id FROM farm_data_sensor WHERE farmer_id=" + aadhaar_id;
   console.log(QueryString);
   pool.getConnection(function(err, connection) {
     connection.query(QueryString, function(err, results) {
