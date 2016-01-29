@@ -139,8 +139,10 @@ app.get('/login', function(req, res) {
 
 //initial request from edison for initializing sensor ids and pin nos
 app.get('/setup_config', function(req, res) {
-    var aadhaar_id = req.query.aadhaar_id;
-    var QueryString = "SELECT sensor_id, pin_no, auto, threshold, motor_status FROM farm_data_sensor, farm_data_crop WHERE crop_id=id AND farmer_id='" + aadhaar_id + "'";
+    //var aadhaar_id = req.query.aadhaar_id;
+    var device_id = req.query.device_id;
+    //var QueryString = "SELECT sensor_id, pin_no, auto, threshold, motor_status FROM farm_data_sensor, farm_data_crop WHERE crop_id=id AND farmer_id='" + aadhaar_id + "'";
+    var QueryString = "SELECT sensor_id, pin_no, auto, threshold, motor_status from farm_data_sensor, farm_data_crop WHERE crop_id=id AND farmer_id = (select aadhaar_no from farm_data_farmer where device_id = '" +device_id+ "');"
     console.log(QueryString);
     pool.getConnection(function(err, connection) {
       connection.query(QueryString, function(err, results) {
