@@ -52,7 +52,7 @@ app.get('/request', function (req, res) {
     pool.getConnection(function(err, connection) {
       connection.query(QueryString, function(err, results) {
           if(err)   {
-              console.log("Request at ./request".info+":fail".error)
+              console.log("Request at ./request".info+":fail".error+":sql query error".warn)
               return
           }
         //console.log(results);
@@ -71,7 +71,7 @@ app.get('/requestall', function(req, res) {
   pool.getConnection(function(err, connection) {
     connection.query(QueryString, function(err, results) {
         if(err){
-            console.log("Request at ./requestall".info+":fail".error)
+            console.log("Request at ./requestall".info+":fail".error+":sql query error".warn)
             return;
         }
       //console.log(results);
@@ -93,7 +93,7 @@ app.get('/auto', function(req, res) {
   pool.getConnection(function(err, connection) {
     connection.query(QueryString, function(err, results) {
         if(err){
-            console.log("Request at ./auto".info+":fail".error)
+            console.log("Request at ./auto".info+":fail".error+":sql query error".warn)
             return;
         }
       res.end("Toggled Auto sensorID="+sensor_id);
@@ -115,7 +115,7 @@ app.get('/motor', function(req, res) {
   pool.getConnection(function(err, connection) {
     connection.query(QueryString, function(err, results) {
         if(err){
-            console.log("Request at ./motor".info+":fail".error)
+            console.log("Request at ./motor".info+":fail".error+":sql query error".warn)
             return
         }
       //console.log("motor");
@@ -137,7 +137,7 @@ app.get('/login', function(req, res) {
       // Use the connection
       connection.query(QueryString, function(err, results) {
         if (err) {
-          console.log("Request at ./login".info+":fail".error);
+          console.log("Request at ./login".info+":fail".error+":sql query error".warn);
           return;
         }
         if (results.length == 0) {
@@ -152,7 +152,7 @@ app.get('/login', function(req, res) {
             //console.log(QueryString);
             connection.query(QueryString, function(err, results) {
                 if (err) {
-                    console.log("Request at ./login".info+":query fail".error);
+                    console.log("Request at ./login".info+":query fail".error+":sql query error".warn);
                     return;
                 }
                 else {
@@ -182,7 +182,7 @@ app.get('/setup_config', function(req, res) {
     pool.getConnection(function(err, connection) {
       connection.query(QueryString, function(err, results) {
         if (err) {
-          console.log("Request at ./setup_config".info+":fail".error);
+          console.log("Request at ./setup_config".info+":fail".error+":sql query error".warn);
           return;
         }
         //console.log(results);
@@ -206,11 +206,13 @@ app.get('/sign_up', function(req, res) {
     if (aadhaar_id == undefined || name == undefined || mobile_no == undefined || password == undefined || device_id == undefined || lat == undefined || lon == undefined) {
       res.statusCode = 406;
       res.end('Incomplete data');
+      console.log("Request at ./sign_up".info+":fail".error+":Incomplete data".warn);
       return;
     }
     else if(aadhaar_id == '' || name == '' || mobile_no == '' || password == '' || device_id == '' || lat == '' || lon == '') {
       res.statusCode = 406;
       res.end('Incomplete data');
+      console.log("Request at ./sign_up".info+":fail".error+":Incomplete data".warn);
       return;
     }
     var QueryString = "SELECT * from farm_data_farmer WHERE aadhaar_no='" + aadhaar_id + "'";
@@ -218,7 +220,7 @@ app.get('/sign_up', function(req, res) {
     pool.getConnection(function(err, connection) {
       connection.query(QueryString, function(err, results) {
         if (err) {
-            console.log("Request at ./sign_up".info+":fail".error);
+            console.log("Request at ./sign_up".info+":fail".error+":sql query error".warn);
           return;
         }
         if (results.length != 0) {
@@ -232,7 +234,7 @@ app.get('/sign_up', function(req, res) {
           //console.log(QueryString);
           connection.query(QueryString, function(err, results) {
             if (err) {
-              console.log("Request at ./sign_up".info+":fail".error);
+              console.log("Request at ./sign_up".info+":fail".error+":sql query error".warn);
               return;
             }
             console.log("Request at ./sign_up".info+":success".success);
@@ -255,11 +257,13 @@ app.get('/sign_up_device', function(req, res) {
     if (aadhaar_id == undefined || name == undefined || mobile_no == undefined || password == undefined || lat == undefined || lon == undefined) {
       res.statusCode = 406;
       res.end('Incomplete data');
+      console.log("Request at ./sign_up_device".info+":fail".error+":Incomplete data".warn);
       return;
     }
     else if(aadhaar_id == '' || name == '' || mobile_no == '' || password == '' || lat == '' || lon == '') {
       res.statusCode = 406;
       res.end('Incomplete data');
+      console.log("Request at ./sign_up_device".info+":fail".error+":Incomplete data".warn);
       return;
     }
     var QueryString = "SELECT * from farm_data_farmer WHERE aadhaar_no='" + aadhaar_id + "'";
@@ -267,7 +271,7 @@ app.get('/sign_up_device', function(req, res) {
     pool.getConnection(function(err, connection) {
       connection.query(QueryString, function(err, results) {
         if (err) {
-            console.log("Request at ./sign_up_device".info+":fail".error);
+            console.log("Request at ./sign_up_device".info+":fail".error+":sql query error".warn);
           return;
         }
         if (results.length != 0) {
@@ -281,7 +285,7 @@ app.get('/sign_up_device', function(req, res) {
             //console.log(QueryString);
             connection.query(QueryString, function(error,resul) {
                 if (error) {
-                  console.log("Request at ./sign_up_device".info+":fail".error);
+                  console.log("Request at ./sign_up_device".info+":fail".error+":sql query error".warn);
                   return;
                 }
                 //console.log(JSON.stringify(resul));
@@ -290,7 +294,7 @@ app.get('/sign_up_device', function(req, res) {
                 //console.log(QueryString);
                 connection.query(QueryString, function(err, results) {
                   if (err) {
-                    console.log("Request at ./sign_up_device".info+":fail".error);
+                    console.log("Request at ./sign_up_device".info+":fail".error+":sql query error".warn);
                     return;
                   }
                   console.log("Request at ./sign_up_device".info+":success".success);
@@ -309,7 +313,7 @@ app.get('/retrieve_all_crops', function(req, res) {
     pool.getConnection(function(err, connection) {
       connection.query(QueryString, function(err, results) {
         if (err) {
-          console.log("Request at ./retrieve_all_crops".info+":fail".error);
+          console.log("Request at ./retrieve_all_crops".info+":fail".error+":sql query error".warn);
           return;
         }
         //console.log(results);
@@ -330,7 +334,7 @@ app.post('/new_sensor_setting',function(req, res) {
     pool.getConnection(function(err, connection) {
         connection.query(QueryString, function(err, results) {
             if (err) {
-              console.log("Request at ./new_sensor_setting".info+":fail".error);
+              console.log("Request at ./new_sensor_setting".info+":fail".error+":sql query error".warn);
               return;
             }
             res.end('sensor saved');
@@ -351,7 +355,7 @@ app.get('/edit_sensor_settings', function(req, res) {
     pool.getConnection(function(err, connection) {
         connection.query(QueryString, function(err, results) {
             if (err) {
-                console.log("Request at ./edit_sensor_settings".info+":fail".error);
+                console.log("Request at ./edit_sensor_settings".info+":fail".error+":sql query error".warn);
                 return;
             }
             res.end('sensor edited');
@@ -370,7 +374,7 @@ app.get('/delete_sensor', function(req, res)    {
     pool.getConnection(function(err, connection)    {
         connection.query(QueryString, function(err, results)    {
             if(err) {
-                console.log("Request at ./delete_sensor".info+":fail".error);
+                console.log("Request at ./delete_sensor".info+":fail".error+":sql query error".warn);
                 return;
             }
             QueryString = "SELECT sensor_id FROM farm_data_sensor WHERE farmer_id=" + aadhaar_id;
@@ -393,7 +397,7 @@ app.get('/add_sensor', function(req, res)   {
     pool.getConnection(function(err, connection) {
         connection.query(QueryString, function(err, insertResult) {
             if (err) {
-              console.log("Request at ./add_sensor".info+":fail".error);
+              console.log("Request at ./add_sensor".info+":fail".error+":sql query error".warn);
               return;
             }
             QueryString = "SELECT sensor_id FROM farm_data_sensor WHERE farmer_id=" + aadhaar_id;
@@ -426,7 +430,7 @@ app.get('/get_stats', function(req, res)    {
           QueryString = "SELECT crop_name FROM farm_data_sensor, farm_data_crop WHERE sensor_id="+sensor_id+" AND crop_id = farm_data_crop.id"
           connection.query(QueryString, function(err, cropResult)   {
               if(err)   {
-                  console.log("Request at ./get_stats".info+":fail".error);
+                  console.log("Request at ./get_stats".info+":fail".error+":sql query error".warn);
                   return
               }
               data.crop=cropResult[0].crop_name
@@ -459,7 +463,7 @@ function deleteOldEntries() {
       connection.query(QueryString, function(err, results) {
         //console.log(results);
         if(err) {
-            console.log("Request at /clearOldEntries".info+":fail".fail)
+            console.log("Request at /clearOldEntries".info+":fail".fail+":sql query error".warn
             return
         }
         console.log("Request at /clearOldEntries".info+":success".success)
@@ -489,7 +493,7 @@ io.on('connection', function(socket) {
         // Use the connection
         connection.query(QueryString, function(err, results) {
           if (err) {
-            console.log("Socket on /new_value".info+"fail".fail+":sensor".help);
+            console.log("Socket on /new_value".info+"fail".fail+":sensor".help+":sql query error".warn);
           }
           console.log("Socket on /new_value".info+"success".success+":sensor".help);
         });
@@ -497,7 +501,7 @@ io.on('connection', function(socket) {
         //console.log(QueryString);
         connection.query(QueryString, function(err, results) {
           if (err) {
-            console.log("Socket on /new_value".info+"fail".fail+":sensed".help);
+            console.log("Socket on /new_value".info+"fail".fail+":sensed".help+":sql query error".warn);
           }
           console.log("Socket on /new_value".info+"success".success+":sensed".help);
         });
@@ -512,7 +516,7 @@ io.on('connection', function(socket) {
           // Use the connection
           connection.query(QueryString, function(err, results) {
             if (err) {
-              console.log("Socket on /sensor_refresh".info+"fail".fail);
+              console.log("Socket on /sensor_refresh".info+"fail".fail+":sql query error".warn);
             }
             console.log("Socket on /sensor_refresh".info+"success".success);
           });
