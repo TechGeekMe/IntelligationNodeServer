@@ -461,67 +461,67 @@ function deleteOldEntries() {
     var QueryString = "DELETE FROM farm_data_sensedvalue WHERE time_recorded < NOW() - INTERVAL 30 DAY;";
     //console.log(QueryString);
     pool.getConnection(function(err, connection) {
-        connection.query(QueryString, function(err, results) {
-            //console.log(results);
-            if (err) {
-                console.log("Request at /clearOldEntries".info + ":fail".fail + ":sql query error".warn)
-                return
-            }
-            console.log("Request at /clearOldEntries".info + ":success".success)
-            connection.release(); // Don't use the connection here, it has been returned to the pool.
+                connection.query(QueryString, function(err, results) {
+                        //console.log(results);
+                        if (err) {
+                            console.log("Request at /clearOldEntries".info + ":fail".fail + ":sql query error".warn
+                                return
+                            }
+                            console.log("Request at /clearOldEntries".info + ":success".success)
+                            connection.release(); // Don't use the connection here, it has been returned to the pool.
+                        });
+                });
+        }
+        //deleting 30day old values once everyday
+    setInterval(deleteOldEntries, 8640000);
+
+    var server = app.listen(process.env.PORT || 8080, function() {
+
+        var host = server.address().address
+        var port = server.address().port
+
+        console.log("App listening at http://%s:%s".bgRed.bold.underline, host, port)
+
+    })
+
+    var io = require('socket.io')(server);
+    io.on('connection', function(socket) {
+        socket.on('new_value', function(newSensorData) {
+            pool.getConnection(function(err, connection) {
+                for (var i = 0; i < newSensorData.length; i++) {
+                    var QueryString = "UPDATE farm_data_sensor SET current_value=" + newSensorData[i].sensor_value + ", time_updated=NOW(), motor_status=" + newSensorData[i].motor_status + " WHERE sensor_id=" + newSensorData[i].sensor_id + " LIMIT 1";
+                    //console.log(QueryString);
+                    // Use the connection
+                    connection.query(QueryString, function(err, results) {
+                        if (err) {
+                            console.log("Socket on /new_value".info + "fail".fail + ":sensor".help + ":sql query error".warn);
+                        }
+                        console.log("Socket on /new_value".info + "success".success + ":sensor".help);
+                    });
+                    QueryString = "INSERT into farm_data_sensedvalue (sensor_id,value) values (" + newSensorData[i].sensor_id + "," + newSensorData[i].sensor_value + ");";
+                    //console.log(QueryString);
+                    connection.query(QueryString, function(err, results) {
+                        if (err) {
+                            console.log("Socket on /new_value".info + "fail".fail + ":sensed".help + ":sql query error".warn);
+                        }
+                        console.log("Socket on /new_value".info + "success".success + ":sensed".help);
+                    });
+                }
+                connection.release();
+            });
         });
-    });
-}
-//deleting 30day old values once everyday
-setInterval(deleteOldEntries, 8640000);
-
-var server = app.listen(process.env.PORT || 8080, function() {
-
-    var host = server.address().address
-    var port = server.address().port
-
-    console.log("App listening at http://%s:%s".bgRed.bold.underline, host, port)
-
-})
-
-var io = require('socket.io')(server);
-io.on('connection', function(socket) {
-    socket.on('new_value', function(newSensorData) {
-        pool.getConnection(function(err, connection) {
-            for (var i = 0; i < newSensorData.length; i++) {
-                var QueryString = "UPDATE farm_data_sensor SET current_value=" + newSensorData[i].sensor_value + ", time_updated=NOW(), motor_status=" + newSensorData[i].motor_status + " WHERE sensor_id=" + newSensorData[i].sensor_id + " LIMIT 1";
+        socket.on('sensor_refresh', function(newSensorData) {
+            pool.getConnection(function(err, connection) {
+                var QueryString = "UPDATE farm_data_sensor SET current_value=" + newSensorData.sensor_value + ", time_updated=NOW(), motor_status=" + newSensorData.motor_status + " WHERE sensor_id=" + newSensorData.sensor_id + " LIMIT 1";
                 //console.log(QueryString);
                 // Use the connection
                 connection.query(QueryString, function(err, results) {
                     if (err) {
-                        console.log("Socket on /new_value".info + "fail".fail + ":sensor".help + ":sql query error".warn);
+                        console.log("Socket on /sensor_refresh".info + "fail".fail + ":sql query error".warn);
                     }
-                    console.log("Socket on /new_value".info + "success".success + ":sensor".help);
+                    console.log("Socket on /sensor_refresh".info + "success".success);
                 });
-                QueryString = "INSERT into farm_data_sensedvalue (sensor_id,value) values (" + newSensorData[i].sensor_id + "," + newSensorData[i].sensor_value + ");";
-                //console.log(QueryString);
-                connection.query(QueryString, function(err, results) {
-                    if (err) {
-                        console.log("Socket on /new_value".info + "fail".fail + ":sensed".help + ":sql query error".warn);
-                    }
-                    console.log("Socket on /new_value".info + "success".success + ":sensed".help);
-                });
-            }
-            connection.release();
-        });
-    });
-    socket.on('sensor_refresh', function(newSensorData) {
-        pool.getConnection(function(err, connection) {
-            var QueryString = "UPDATE farm_data_sensor SET current_value=" + newSensorData.sensor_value + ", time_updated=NOW(), motor_status=" + newSensorData.motor_status + " WHERE sensor_id=" + newSensorData.sensor_id + " LIMIT 1";
-            //console.log(QueryString);
-            // Use the connection
-            connection.query(QueryString, function(err, results) {
-                if (err) {
-                    console.log("Socket on /sensor_refresh".info + "fail".fail + ":sql query error".warn);
-                }
-                console.log("Socket on /sensor_refresh".info + "success".success);
+                connection.release();
             });
-            connection.release();
         });
     });
-});
