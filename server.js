@@ -19,23 +19,23 @@ colors.setTheme({
  error: 'red'
 });
 
-//azure mysql server for final use
-// var pool = mysql.createPool({
-//   connectionLimit: 4,
-//   host: '***REMOVED***',
-//   user: '***REMOVED***',
-//   password: '***REMOVED***',
-//   database: 'farm'
-// });
-
-//local mysql server
+// azure mysql server for final use
 var pool = mysql.createPool({
   connectionLimit: 4,
-  host: 'localhost',
-  user: 'root',
+  host: '***REMOVED***',
+  user: '***REMOVED***',
   password: '***REMOVED***',
   database: 'farm'
 });
+
+// //local mysql server
+// var pool = mysql.createPool({
+//   connectionLimit: 4,
+//   host: 'localhost',
+//   user: 'root',
+//   password: '***REMOVED***',
+//   database: 'farm'
+// });
 
 // This responds with "Hello Farmer" on the homepage
 app.get('/', function (req, res) {
@@ -463,7 +463,7 @@ function deleteOldEntries() {
       connection.query(QueryString, function(err, results) {
         //console.log(results);
         if(err) {
-            console.log("Request at /clearOldEntries".info+":fail".fail+":sql query error".warn
+            console.log("Request at /clearOldEntries".info+":fail".fail+":sql query error".warn);
             return
         }
         console.log("Request at /clearOldEntries".info+":success".success)
