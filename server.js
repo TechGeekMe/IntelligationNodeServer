@@ -20,22 +20,22 @@ colors.setTheme({
 });
 
 // azure mysql server for final use
-var pool = mysql.createPool({
-  connectionLimit: 4,
-  host: '***REMOVED***',
-  user: '***REMOVED***',
-  password: '***REMOVED***',
-  database: 'farm'
-});
-
-// //local mysql server
 // var pool = mysql.createPool({
 //   connectionLimit: 4,
-//   host: 'localhost',
-//   user: 'root',
+//   host: '***REMOVED***',
+//   user: '***REMOVED***',
 //   password: '***REMOVED***',
 //   database: 'farm'
 // });
+
+//local mysql server
+var pool = mysql.createPool({
+  connectionLimit: 4,
+  host: 'localhost',
+  user: 'root',
+  password: '***REMOVED***',
+  database: 'farm'
+});
 
 // This responds with "Hello Farmer" on the homepage
 app.get('/', function(req, res) {
@@ -154,7 +154,7 @@ app.get('/login', function(req, res) {
             }
             if (results[0].password == password) {
                 res.statusCode = 202;
-                var QueryString = "SELECT sensor_id, lat, lon FROM farm_data_farmer, farm_data_sensor WHERE aadhaar_no=farmer_id AND aadhaar_no='" + aadhaar_id + "'";
+                var QueryString = "SELECT sensor_id FROM farm_data_sensor WHERE farmer_id='" + aadhaar_id + "'";
                 //console.log(QueryString);
                 connection.query(QueryString, function(err, results) {
                     if (err) {
@@ -162,7 +162,22 @@ app.get('/login', function(req, res) {
                         return;
                     } else {
                         console.log("Request at ./login".info + ":success".success)
-                        res.end(JSON.stringify(results));
+
+                        var QueryString = "SELECT lat, lon FROM farm_data_farmer WHERE aadhaar_no='" + aadhaar_id + "'";
+                        //console.log(QueryString);
+                        connection.query(QueryString, function(err, resul) {
+                            if (err) {
+                                console.log("Request at ./login".info + ":query fail".error + ":sql query error".warn);
+                                return;
+                            } else {
+                                console.log("Request at ./login".info + ":success".success)
+                                var response = {
+                                  location: resul[0],
+                                  sensors: results
+                                }
+                                res.end(JSON.stringify(response));
+                            }
+                        });
                     }
                 });
             } else {
@@ -281,12 +296,18 @@ app.get('/sign_up_device', function(req, res) {
                 console.log("Request at ./sign_up_device".info + ":fail".error + ": user exists".warn)
                 return;
             } else {
-                var QueryString = "SELECT device_id FROM manufacturer_data_device_data WHERE aadhaar_id = '" + aadhaar_id + "'";
+                var QueryString = "SELECT device_id FROM manufacturer_data_device_data WHERE aadhaar_id='" + aadhaar_id + "'";
                 //console.log(QueryString);
                 connection.query(QueryString, function(error, resul) {
                     if (error) {
                         console.log("Request at ./sign_up_device".info + ":fail".error + ":sql query error".warn);
                         return;
+                    }
+                    if(resul.length == 0) {
+                      res.statusCode = 402;
+                      res.end('User not registered');
+                      console.log("Request at ./sign_up_device".info + ":fail".error + ": user not registered".warn)
+                      return;
                     }
                     //console.log(JSON.stringify(resul));
                     var device_id = resul[0].device_id;
@@ -330,8 +351,8 @@ app.post('/new_sensor_setting', function(req, res) {
     var pin_no = req.body.pin_no;
     var aadhaar_id = req.body.aadhaar_id;
     var QueryString = "INSERT into farm_data_sensor (farmer_id, crop_id, auto, motor_status, current_value, time_updated, pin_no)  values('" + aadhaar_id + "', '" + crop_id + "', 0, 0, 0, NOW(), '" + pin_no + "')";
-    //console.log(QueryString);
     pool.getConnection(function(err, connection) {
+    //console.log(QueryString);
         connection.query(QueryString, function(err, results) {
             if (err) {
                 console.log("Request at ./new_sensor_setting".info + ":fail".error + ":sql query error".warn);
