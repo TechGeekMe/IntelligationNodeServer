@@ -19,7 +19,7 @@ colors.setTheme({
     error: 'red'
 });
 
-azure mysql server for final use
+// azure mysql server for final use
 var pool = mysql.createPool({
   connectionLimit: 4,
   host: '***REMOVED***',
