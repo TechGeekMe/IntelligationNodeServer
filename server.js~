@@ -22,9 +22,9 @@ colors.setTheme({
 //azure mysql server for final use
 // var pool = mysql.createPool({
 //   connectionLimit: 4,
-//   host: '***REMOVED***',
-//   user: '***REMOVED***',
-//   password: '***REMOVED***',
+//   host: 'us-cdbr-azure-northcentral-a.cleardb.com',
+//   user: 'bdf4084f79afab',
+//   password: '7243831a',
 //   database: 'farm'
 // });
 
@@ -33,7 +33,7 @@ var pool = mysql.createPool({
     connectionLimit: 4,
     host: 'localhost',
     user: 'root',
-    password: '***REMOVED***',
+    password: '3070',
     database: 'farm'
 });
 

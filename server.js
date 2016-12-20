@@ -3,6 +3,7 @@ var app = express();
 var mysql = require('mysql');
 var bodyParser = require('body-parser');
 var colors = require('colors');
+var credentials = require('credentials.js')
 app.use(bodyParser.json());
 
 colors.setTheme({
@@ -22,9 +23,9 @@ colors.setTheme({
 // azure mysql server for final use
 var pool = mysql.createPool({
   connectionLimit: 4,
-  host: '***REMOVED***',
-  user: '***REMOVED***',
-  password: '***REMOVED***',
+  host: credentials.mysql.host,
+  user: credentials.mysql.user,
+  password: credentials.mysql.password,
   database: 'farm'
 });
 
@@ -33,7 +34,7 @@ var pool = mysql.createPool({
 //   connectionLimit: 4,
 //   host: 'localhost',
 //   user: 'root',
-//   password: '***REMOVED***',
+//   password: credentials.mysql_local.password,
 //   database: 'farm'
 // });
 
